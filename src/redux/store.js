@@ -1,7 +1,8 @@
 // src/redux/store.js
 import { createStore } from 'redux';
-import authReducer from './reducers/authReducer';
+import authReducer from './reducers';
 
 const store = createStore(authReducer);
 
 export default store;
+
