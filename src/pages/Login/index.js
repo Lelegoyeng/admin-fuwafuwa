@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../redux/api'; // Import your API functions
 
 const Login = () => {
-    const { loading, loggedIn } = useSelector((state) => state.auth);
+    const { loading, loggedIn, isAuthenticated, error } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
-        // Add your authentication logic here
-        // For demonstration purposes, let's assume the correct email is "user" and password is "password"
-        if (email === 'user' && password === 'password') {
+        // Dispatch login action using the API function
+        await loginUser({ email, password }, dispatch); // Pass dispatch here
+
+        // Check the authentication status after the login attempt
+        if (isAuthenticated) {
             // Successful login logic
             setErrorMessage('');
             alert('Login successful!');
@@ -25,7 +27,7 @@ const Login = () => {
             navigate('/home');
         } else {
             // Display error message for incorrect password
-            setErrorMessage('Incorrect email or password');
+            setErrorMessage(error || 'Incorrect email or password');
         }
     };
 
