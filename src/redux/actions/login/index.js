@@ -47,30 +47,13 @@ export const persistAuth = () => async (dispatch) => {
 export const login = (body) => async (dispatch) => {
     dispatch(loginStart());
     try {
-        const { result, success, message } = await authLogin(body);
-        // if (!success) {
-        //     dispatch(
-        //         actions.showAlert({
-        //             message: message,
-        //             show: true,
-        //             type: "danger",
-        //         })
-        //     );
-        //     throw new Error(message);
-        // }
+        const { result } = await authLogin(body);
 
         // // Save access token
-        // storeLocalStorage(LOCAL_USER_KEY, JSON.stringify(result));
+        storeLocalStorage(LOCAL_USER_KEY, JSON.stringify(result));
 
         // // Login success
-        // dispatch(loginSuccess(result));
-        // dispatch(
-        //     actions.showAlert({
-        //         message: message,
-        //         show: true,
-        //         type: "success",
-        //     })
-        // );
+        dispatch(loginSuccess(result));
     } catch (err) {
         dispatch(loginFail({ message: err.message }));
     }

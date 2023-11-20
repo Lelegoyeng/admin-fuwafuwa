@@ -47,7 +47,6 @@ const Signin = () => {
                         errors={errors}
                         className="form-control-user"
                         dataCy="password"
-                        button={{ icon: 'far fa-eye-slash', action: () => console.log('LOXX iam triggered') }}
                     />
                     <button
                         disabled={loading}
