@@ -1,72 +1,73 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../../redux/api'; // Import your API functions
+import * as actions from '../../redux/actions';
+import { useForm } from "react-hook-form";
+import TextInput from "../../components/TextInput";
 
-const Login = () => {
-    const { loading, loggedIn, isAuthenticated, error } = useSelector((state) => state.auth);
+const Signin = () => {
+    const { loading, loggedIn } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-
-        // Dispatch login action using the API function
-        await loginUser({ email, password }, dispatch); // Pass dispatch here
-
-        // Check the authentication status after the login attempt
-        if (isAuthenticated) {
-            // Successful login logic
-            setErrorMessage('');
-            alert('Login successful!');
-            // Redirect to the HOME page
-            navigate('/home');
-        } else {
-            // Display error message for incorrect password
-            setErrorMessage(error || 'Incorrect email or password');
-        }
+    const handleSignIn = (data) => {
+        dispatch(actions.login(data));
     };
+
+    if (loggedIn) {
+        // <Navigate to="/"/>
+    }
 
     return (
         <div className='flex justify-center items-center h-screen'>
             <div className='bg-gray-800 p-10 rounded-lg w-full max-w-md'>
                 <h2 className='text-2xl font-bold mb-5 text-white'>Login</h2>
-                <form className='space-y-4' onSubmit={handleLogin}>
-                    <div>
-                        <label className='block text-white'>Username</label>
-                        <input
-                            type='text'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className='w-full p-2 border rounded'
-                            placeholder='Enter your email'
-                        />
-                    </div>
-                    <div>
-                        <label className='block text-white'>Password</label>
-                        <input
-                            type='password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className='w-full p-2 border rounded'
-                            placeholder='Enter your password'
-                        />
-                    </div>
-                    {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+                <form onSubmit={handleSubmit(handleSignIn)} className="user">
+                    <TextInput
+                        type="text"
+                        name="email"
+                        placeholder="Email"
+                        register={register}
+                        validations={{ required: "Email harus diisi" }}
+                        errors={errors}
+                        className="form-control-user"
+                        dataCy="email"
+                    />
+
+                    <TextInput
+                        type={"password"}
+                        name="password"
+                        placeholder="Password"
+                        register={register}
+                        validations={{ required: "Password harus diisi" }}
+                        errors={errors}
+                        className="form-control-user"
+                        dataCy="password"
+                        button={{ icon: 'far fa-eye-slash', action: () => console.log('LOXX iam triggered') }}
+                    />
                     <button
-                        type='submit'
-                        className='w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
+                        disabled={loading}
+                        type="submit"
+                        className="btn btn-primary-f btn-user btn-block"
+                        data-cy="signin"
                     >
-                        Login
+                        <i
+                            className={
+                                `fas ` +
+                                (!loading ? `fa-sign-in-alt` : `fa-spinner fa-spin`)
+                            }
+                        ></i>
+                        &nbsp; SIGN IN
                     </button>
+                    {/* fa-spinner fa-spin */}
                 </form>
             </div>
         </div>
     );
 };
 
-export default Login;
+export default Signin;
